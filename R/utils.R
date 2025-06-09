@@ -1,4 +1,6 @@
-
+library(jsonlite)
+library(readr)
+library(arrow)
 
 
 log_message <- function(msg){
@@ -13,7 +15,7 @@ log_message <- function(msg){
 #' @param df name of the dataframe
 
 remove_duplicates<- function(df){
-  df[!duplicated(rownames(df), drop=FALSE)]
+  df[!duplicated(df), ,drop=FALSE]
 }
 
 #' data validation
@@ -22,7 +24,7 @@ remove_duplicates<- function(df){
 #' @param df_name name the dataframe
 
 validate_dataframe_structure <- function(df, df_name) {
-  if (!is.data.frame(df)) stop(paste(df_name, "must be a data frame."))
+  #if (!is.data.frame(df)) stop(paste(df_name, "must be a data frame."))
   if (nrow(df) == 0) stop(paste(df_name, "has 0 rows."))
   if (ncol(df) == 0) stop(paste(df_name, "has 0 columns."))
   if (is.null(rownames(df))) stop(paste(df_name, "must have rownames."))
@@ -56,4 +58,29 @@ process_and_validate_dataset <- function(df, df_name) {
   df <- remove_duplicates(df)
   report_missing_values(df, df_name)
   return(df)
+}
+
+
+format_output <- function(data, format = "json") {
+  format <- tolower(format)
+
+  if (format == "json") {
+    # JSON output as string
+    return(toJSON(data, pretty = TRUE, auto_unbox = TRUE))
+
+  } else if (format == "csv") {
+    # CSV output as string
+    tmp <- tempfile(fileext = ".csv")
+    write_csv(data, tmp)
+    return(readr::read_file(tmp))
+
+  } else if (format == "parquet") {
+    # Parquet output as raw binary (to be returned as a file)
+    tmp <- tempfile(fileext = ".parquet")
+    write_parquet(data, sink = tmp)
+    return(readBin(tmp, what = "raw", n = file.info(tmp)$size))
+
+  } else {
+    stop("Unsupported format. Choose from 'json', 'csv', or 'parquet'.")
+  }
 }

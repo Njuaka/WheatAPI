@@ -22,14 +22,16 @@ load_wheat_data <- function(){
   rownames(marker) <- paste0("Line", rownames(marker))
 
   # full data; return all datasets in a list
-  list(Genotypes = genotype,
-       Phenotypes = phenotype,
+  list(genotype = genotype,
+       phenotype = phenotype,
        marker = marker,
        Combined = list(
-        Genotypes = genotype,
-        Phenotypes = phenotype,
+        genotype = genotype,
+        phenotype = phenotype,
         marker = marker
         )
        )
 }
+
+
 

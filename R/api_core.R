@@ -1,6 +1,10 @@
-source("R/data_loader.R")
-source("R/api_limit.R")
-source("R/utils.R")
+#source("R/data_loader.R")
+#source("R/api_limit.R")
+#source("R/utils.R")
+
+source(file.path("..", "R", "data_loader.R"))
+source(file.path("..", "R", "api_call_limit.R"))
+source(file.path("..", "R", "utils.R"))
 
 # Load and cache the data
 data_list <- load_wheat_data()
@@ -16,11 +20,11 @@ data_list <- load_wheat_data()
 #'
 #' @returns
 #' @export
-#' @get /genotypes
+#' @get /phenotypes
 function(user_id, format="json", columns=NULL, rows=NULL, limit=100, offset=0){
 
   check_user_limit(user_id)
-  df <- process_and_validate_dataset(ata_list$phenotype, "phenotype")
+  df <- process_and_validate_dataset(data_list$phenotype, "phenotype")
   format_output(df, format)
 }
 
@@ -29,7 +33,7 @@ function(user_id, format="json", columns=NULL, rows=NULL, limit=100, offset=0){
 function(user_id, format="json", columns=NULL, rows=NULL, limit=100, offset=0){
 
   check_user_limit(user_id)
-  df <- process_and_validate_dataset(ata_list$genotype, "genotype")
+  df <- process_and_validate_dataset(data_list$genotype, "genotype")
   format_output(df, format)
 }
 
@@ -38,7 +42,7 @@ function(user_id, format="json", columns=NULL, rows=NULL, limit=100, offset=0){
 function(user_id, format="json", columns=NULL, rows=NULL, limit=100, offset=0){
 
   check_user_limit(user_id)
-  df <- process_and_validate_dataset(ata_list$marker, "marker")
+  df <- process_and_validate_dataset(data_list$marker, "marker")
   format_output(df, format)
 }
 
