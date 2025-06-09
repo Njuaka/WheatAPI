@@ -22,12 +22,12 @@ check_user_limit <- function(user_id, hours=24, quota=1,
   }
 
   # filter the log file for the user within the last hours
-  user_logs <- log[log$user_id == user_id]
-  recent_logs <- user_logs[difftime(now, user_log$timestamp, units="hours")<=hours,]
+  user_logs <- log[log$user_id == user_id,]
+  recent_logs <- user_logs[difftime(now, user_logs$timestamp, units="hours")<=hours,]
 
   # check if the quota has exceeded
 
-  if (nrow(recent_logs)>quota){
+  if (nrow(recent_logs)>=quota){
     next_allowed <- min(recent_logs$timestamp) + hours *3600
     wait_time <- round(as.numeric(difftime(next_allowed, now, units = "hours")),2)
     stop(paste("API request limit reached. Try again in", wait_time, "hour(s)."))

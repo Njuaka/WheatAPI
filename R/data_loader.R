@@ -1,7 +1,6 @@
-
 #' Title  Load data
 #' load and prepare wheat data
-#' @returns both individual and combined datasets for the three wheat data tables
+#' @returns A named list with cleaned and labeled: Genotypes, Phenotypes, Marker, Combined
 
 load_wheat_data <- function(){
   if(!requireNamespace("BGLR", quietly = TRUE)) install.packages("BGLR")
@@ -19,11 +18,18 @@ load_wheat_data <- function(){
 
   # marker
   marker <- as.data.frame(wheat.X)
+  colnames(marker) <- paste0("marker_", colnames(marker))
+  rownames(marker) <- paste0("Line", rownames(marker))
 
   # full data; return all datasets in a list
-  Combined = list(
-      Genotypes = genotype,
-      Phenotypes = phenotype,
-      marker = marker
-  )
+  list(Genotypes = genotype,
+       Phenotypes = phenotype,
+       marker = marker,
+       Combined = list(
+        Genotypes = genotype,
+        Phenotypes = phenotype,
+        marker = marker
+        )
+       )
 }
+
